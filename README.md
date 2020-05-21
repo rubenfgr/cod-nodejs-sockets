@@ -7,7 +7,7 @@ Reconstruir módulos de Node
 npm install
 ```
 
-Generar el DIST
+Escuchar cambios en los archivos y compilar a Javascript en el directorio configurado en "tsconfig.json"
 ```sh
 tsc -w
 ```
