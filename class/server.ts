@@ -4,6 +4,7 @@ import express from 'express';
 import { SERVER_PORT } from '../global/environment';
 import socketIO from 'socket.io';
 import http from 'http';
+import * as socket from '../sockets/sockets';
 
 export default class Server {
 
@@ -19,6 +20,7 @@ export default class Server {
         this.port = SERVER_PORT;
 
         this.httpServer = new http.Server(this.app);
+
         this.io = socketIO(this.httpServer);
 
         this.listenSockets();
@@ -34,6 +36,12 @@ export default class Server {
 
         this.io.on('connection', client => {
             console.log('Cliente conectado');
+
+            // Messages
+            socket.message(client, this.io);
+
+            // Disconect
+            socket.disconnect(client);
         });
     }
 
@@ -43,7 +51,7 @@ export default class Server {
 
     start() {
 
-        this.app.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log(`Servidor corriendo en el puerto ${this.port}`);
         });
 
