@@ -2,6 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import Server from '../class/server';
+import { usuariosConectados } from '../sockets/sockets';
 
 const router = Router();
 
@@ -60,5 +61,43 @@ router.post('/mensajes/:id', (req: Request, res: Response) => {
     });
 
 });
+
+// =========================================
+//      Servicio para obtener todos los IDS de los usuarios
+// =========================================
+router.get('/usuarios', (req: Request, res: Response) => {
+
+    const server = Server.instance;
+    
+    server.io.clients( (err: any, clients: string[]) => {
+
+        if(err) {
+            return res.json({
+                ok: false,
+                err
+            })
+        }
+
+        res.json({
+            ok: true,
+            clients
+        });
+    });
+
+});
+
+
+// =========================================
+//      Obtener usuarios y sus nombres
+// =========================================
+router.get('/usuarios/detalle', (req: Request, res: Response) => {
+
+    res.json({
+        ok: true,
+        clients: usuariosConectados.getUsuarios()
+    });
+
+});
+
 
 export default router;
